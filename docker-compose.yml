@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:12
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: booknetwork
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+        - booknetwork
+    restart: unless-stopped
+
+  mail-dev:
+    image: maildev/maildev
+    ports:
+      - "1080:80"
+      - "1025:25"
+    networks:
+        - booknetwork
+    restart: unless-stopped
+
+networks:
+    booknetwork:
+        driver: bridge
