@@ -1,12 +1,15 @@
 package com.aed.booknetwork.auth;
 
 import com.aed.booknetwork.email.EmailService;
+import com.aed.booknetwork.email.EmailTemplateName;
 import com.aed.booknetwork.role.RoleRepository;
 import com.aed.booknetwork.user.Token;
 import com.aed.booknetwork.user.TokenRepository;
 import com.aed.booknetwork.user.User;
 import com.aed.booknetwork.user.UserRepository;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +27,10 @@ public class AuthenticationService {
     private final TokenRepository tokenRepository;
     private final EmailService emailService;
 
-    public void register(RegistrationRequest request) {
+    @Value("${application.mailing.frontend.activation-url}")
+    private String activationUrl;
+
+    public void register(RegistrationRequest request) throws MessagingException {
         var userRole = roleRepository.findByName("USER").orElseThrow(() -> new RuntimeException("Role not found"));
         var user = User.builder()
                 .firstName(request.getFirstName())
@@ -32,15 +38,17 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .roles(List.of(userRole))
-                .enabled(true)
+                .enabled(false)
                 .accountLocked(false)
                 .build();
         userRepository.save(user);
         sendValidationEmail(user);
     }
 
-    private void sendValidationEmail(User user) {
+    private void sendValidationEmail(User user) throws MessagingException {
         var newToken = generateAndSaveToken(user);
+        emailService.sendEmail(user.getEmail(), user.getFullName(), EmailTemplateName.ACTIVATE_ACCOUNT,
+                activationUrl, newToken, "Activate your account");
 
     }
 
@@ -48,7 +56,7 @@ public class AuthenticationService {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder tokenBuilder = new StringBuilder();
         SecureRandom random = new SecureRandom();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 12; i++) {
             tokenBuilder.append(characters.charAt(random.nextInt(characters.length())));
         }
         String token = tokenBuilder.toString();

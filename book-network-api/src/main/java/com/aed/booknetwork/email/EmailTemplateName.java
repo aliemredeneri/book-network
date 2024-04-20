@@ -1,7 +1,11 @@
 package com.aed.booknetwork.email;
 
+import lombok.Getter;
+
+@Getter
 public enum EmailTemplateName {
-    ACTIVATION("activation");
+
+    ACTIVATE_ACCOUNT("activate_account");
 
     private final String name;
 
