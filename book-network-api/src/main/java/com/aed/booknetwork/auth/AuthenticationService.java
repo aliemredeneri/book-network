@@ -1,7 +1,6 @@
 package com.aed.booknetwork.auth;
 
 import com.aed.booknetwork.email.EmailService;
-import com.aed.booknetwork.email.EmailTemplateName;
 import com.aed.booknetwork.role.RoleRepository;
 import com.aed.booknetwork.user.Token;
 import com.aed.booknetwork.user.TokenRepository;
@@ -47,9 +46,9 @@ public class AuthenticationService {
 
     private void sendValidationEmail(User user) throws MessagingException {
         var newToken = generateAndSaveToken(user);
-        emailService.sendEmail(user.getEmail(), user.getFullName(), EmailTemplateName.ACTIVATE_ACCOUNT,
-                activationUrl, newToken, "Activate your account");
 
+        emailService.sendEmail(user.getEmail(), user.getFullName(), "activate_account", activationUrl,
+                newToken, "Account activation");
     }
 
     private String generateAndSaveToken(User user) {

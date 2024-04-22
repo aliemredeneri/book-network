@@ -3,6 +3,8 @@ package com.aed.booknetwork.email;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -14,23 +16,18 @@ import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.mail.javamail.MimeMessageHelper.MULTIPART_MODE_MIXED;
-import org.springframework.mail.javamail.JavaMailSender;
+
 @Service
-//@Slf4j
+@Slf4j
 @RequiredArgsConstructor
 public class EmailService {
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
     @Async
-    public void sendEmail(String to, String username, EmailTemplateName emailTemplate, String confirmationUrl,
-            String activationCode, String subject) throws MessagingException {
-        String templateName;
-        if (emailTemplate == null) {
-            templateName = "confirm-email";
-        } else {
-            templateName = emailTemplate.name();
-        }
+    public void sendEmail(String to, String username, String templateName, String confirmationUrl,
+                          String activationCode, String subject) throws MessagingException {
+
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, MULTIPART_MODE_MIXED, UTF_8.name());
         Map<String, Object> properties = new HashMap<>();
