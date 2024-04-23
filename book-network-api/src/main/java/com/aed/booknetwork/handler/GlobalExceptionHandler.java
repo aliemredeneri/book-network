@@ -42,7 +42,6 @@ public class GlobalExceptionHandler {
                 );
     }
 
-
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ExceptionResponse> handleException() {
         return ResponseEntity

@@ -1,5 +1,7 @@
 package com.aed.booknetwork.user;
 
+import com.aed.booknetwork.book.Book;
+import com.aed.booknetwork.history.BookTransactionHistory;
 import com.aed.booknetwork.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -39,6 +41,13 @@ public class User implements UserDetails, Principal {
     private LocalDate birthDate;
     private boolean enabled;
     private boolean accountLocked;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Book> books;
+
+
+    @OneToMany(mappedBy = "user")
+    private List<BookTransactionHistory> transactionHistories;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
