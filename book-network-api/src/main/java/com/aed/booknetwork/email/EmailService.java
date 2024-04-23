@@ -25,9 +25,14 @@ public class EmailService {
     private final SpringTemplateEngine templateEngine;
 
     @Async
-    public void sendEmail(String to, String username, String templateName, String confirmationUrl,
+    public void sendEmail(String to, String username, EmailTemplateName emailTemplate, String confirmationUrl,
                           String activationCode, String subject) throws MessagingException {
-
+        String templateName;
+        if (emailTemplate == null) {
+            templateName = "confirm-email";
+        } else {
+            templateName = emailTemplate.name();
+        }
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, MULTIPART_MODE_MIXED, UTF_8.name());
         Map<String, Object> properties = new HashMap<>();
@@ -38,7 +43,7 @@ public class EmailService {
         Context context = new Context();
         context.setVariables(properties);
 
-        helper.setFrom("contact@ali.com");
+        helper.setFrom("contact@aliemre.com");
         helper.setTo(to);
         helper.setSubject(subject);
 
