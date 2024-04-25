@@ -1,6 +1,7 @@
 package com.aed.booknetwork.book;
 
 import com.aed.booknetwork.common.PageResponse;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -88,7 +89,7 @@ public class BookController {
         return ResponseEntity.ok(bookService.approveReturnBorrowedBook(bookId, connectedUser));
     }
 
-    @PostMapping(value = "/cover/{book-id}", consumes = "multipart/form-data")
+    @PostMapping(value = "/cover/{book-id}", consumes = {"multipart/form-data"})
     public ResponseEntity<?> uploadBookCoverPicture(@PathVariable("book-id") Integer bookId, @Parameter() @RequestPart("file") MultipartFile file, Authentication connectedUser) {
         bookService.uploadBookCoverPicture(file, connectedUser, bookId);
         return ResponseEntity.accepted().build();

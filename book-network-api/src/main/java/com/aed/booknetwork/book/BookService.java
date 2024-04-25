@@ -2,6 +2,7 @@ package com.aed.booknetwork.book;
 
 import com.aed.booknetwork.common.PageResponse;
 import com.aed.booknetwork.exception.OperationNotPermittedException;
+import com.aed.booknetwork.file.FileStorageService;
 import com.aed.booknetwork.history.BookTransactionHistory;
 import com.aed.booknetwork.history.BookTransactionHistoryRepository;
 import com.aed.booknetwork.user.User;
@@ -27,6 +28,7 @@ public class BookService {
     private final BookRepository bookRepository;
     private final BookTransactionHistoryRepository bookTransactionHistoryRepository;
     private final BookMapper bookMapper;
+    private final FileStorageService fileStorageService;
 
     public Integer createBook(BookRequest bookRequest, Authentication connectedUser) {
         User user = (User) connectedUser.getPrincipal();
@@ -161,8 +163,8 @@ public class BookService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("No book found with ID:: " + bookId));
         User user = ((User) connectedUser.getPrincipal());
-        var profilePicture = fileStorageService.saveFile(file, bookId, user.getId());
-        book.setBookCover(profilePicture);
+        var bookCover = fileStorageService.saveFile(file, user.getId());
+        book.setBookCover(bookCover);
         bookRepository.save(book);
     }
 
