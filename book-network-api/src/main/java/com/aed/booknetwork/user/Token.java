@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Token {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private String token;
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;

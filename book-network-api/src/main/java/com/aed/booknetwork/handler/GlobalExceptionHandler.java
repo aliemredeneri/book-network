@@ -1,5 +1,7 @@
 package com.aed.booknetwork.handler;
 
+import com.aed.booknetwork.exception.ActivationTokenException;
+import com.aed.booknetwork.exception.OperationNotPermittedException;
 import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +67,7 @@ public class GlobalExceptionHandler {
                                 .build()
                 );
     }
-    /*
+
 
     @ExceptionHandler(ActivationTokenException.class)
     public ResponseEntity<ExceptionResponse> handleException(ActivationTokenException exp) {
@@ -88,8 +90,6 @@ public class GlobalExceptionHandler {
                                 .build()
                 );
     }
-
-     */
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
