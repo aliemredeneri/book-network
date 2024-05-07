@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 contact = @Contact(name = "Ali Emre", email = "contact@ali.com", url = "https://aed.com"),
                 description = "OpenApi documentation for Spring Security",
                 title = "OpenApi specification - Ali emre",
-                version = "1.0",
+                version = "1.1",
                 license = @License(name = "Licence name", url = "https://some-url.com"),
                 termsOfService = "Terms of service"
         ),
