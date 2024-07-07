@@ -28,16 +28,18 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/auth/**",
+                        req.requestMatchers(
+                                        "/auth/**",
                                         "/v2/api-docs",
                                         "/v3/api-docs",
                                         "/v3/api-docs/**",
+                                        "/swagger-resources",
                                         "/swagger-resources/**",
-                                        "/swagger-ui/**",
-                                        "/swagger-ui.html",
-                                        "/webjars/**",
                                         "/configuration/ui",
-                                        "/configuration/security")
+                                        "/configuration/security",
+                                        "/swagger-ui/**",
+                                        "/webjars/**",
+                                        "/swagger-ui.html")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
