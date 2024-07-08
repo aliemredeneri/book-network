@@ -6,6 +6,7 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { FeedbackService } from './services/feedback.service';
 import { BookService } from './services/book.service';
+import { AuthenticationService } from './services/authentication.service';
 
 /**
  * Module that provides all services and configuration.
@@ -17,6 +18,7 @@ import { BookService } from './services/book.service';
   providers: [
     FeedbackService,
     BookService,
+    AuthenticationService,
     ApiConfiguration
   ],
 })
@@ -33,7 +35,7 @@ export class ApiModule {
     }
   }
 
-  constructor( 
+  constructor(
     @Optional() @SkipSelf() parentModule: ApiModule,
     @Optional() http: HttpClient
   ) {
@@ -42,7 +44,7 @@ export class ApiModule {
     }
     if (!http) {
       throw new Error('You need to import the HttpClientModule in your AppModule! \n' +
-      'See also https://github.com/angular/angular/issues/20575');
+        'See also https://github.com/angular/angular/issues/20575');
     }
   }
 }
