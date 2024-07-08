@@ -39,4 +39,4 @@ application:
     uploads:
       photos-output-path: ./uploads
 server:
-  port: 8088
+  port: 8080
