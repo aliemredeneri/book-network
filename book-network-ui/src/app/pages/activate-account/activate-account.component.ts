@@ -6,10 +6,6 @@ import {CodeInputModule} from "angular-code-input";
 
 @Component({
   selector: 'app-activate-account',
-  standalone: true,
-  imports: [
-    CodeInputModule
-  ],
   templateUrl: './activate-account.component.html',
   styleUrl: './activate-account.component.scss'
 })
