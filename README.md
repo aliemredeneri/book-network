@@ -27,16 +27,16 @@ Book Social Network is a full-stack application that enables users to manage the
 - Book Return Approval: Functionality to approve book returns.
 
 #### Class diagram
-![Class diagram](screenshots/class-diagram.png)
+![Class diagram](class-diagram.png)
 
 #### Spring security diagram
-![Security diagram](screenshots/security.png)
+![Security diagram](security.png)
 
 #### Backend pipeline
-![Security diagram](screenshots/be-pipeline.png)
+![Security diagram](be-pipeline.png)
 
 #### Backend pipeline
-![Security diagram](screenshots/fe-pipeline.png)
+![Security diagram](fe-pipeline.png)
 
 ## Technologies Used
 
