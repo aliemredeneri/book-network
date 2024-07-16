@@ -14,22 +14,22 @@ import { ApproveReturnBorrowBook$Params } from '../fn/book/approve-return-borrow
 import { BookResponse } from '../models/book-response';
 import { borrowBook } from '../fn/book/borrow-book';
 import { BorrowBook$Params } from '../fn/book/borrow-book';
-import { createBook } from '../fn/book/create-book';
-import { CreateBook$Params } from '../fn/book/create-book';
+import { findAllBooks } from '../fn/book/find-all-books';
+import { FindAllBooks$Params } from '../fn/book/find-all-books';
 import { findAllBooksByOwner } from '../fn/book/find-all-books-by-owner';
 import { FindAllBooksByOwner$Params } from '../fn/book/find-all-books-by-owner';
 import { findAllBorrowedBooks } from '../fn/book/find-all-borrowed-books';
 import { FindAllBorrowedBooks$Params } from '../fn/book/find-all-borrowed-books';
 import { findAllReturnedBooks } from '../fn/book/find-all-returned-books';
 import { FindAllReturnedBooks$Params } from '../fn/book/find-all-returned-books';
-import { getAllBooks } from '../fn/book/get-all-books';
-import { GetAllBooks$Params } from '../fn/book/get-all-books';
-import { getBookById } from '../fn/book/get-book-by-id';
-import { GetBookById$Params } from '../fn/book/get-book-by-id';
+import { findBookById } from '../fn/book/find-book-by-id';
+import { FindBookById$Params } from '../fn/book/find-book-by-id';
 import { PageResponseBookResponse } from '../models/page-response-book-response';
 import { PageResponseBorrowedBookResponse } from '../models/page-response-borrowed-book-response';
 import { returnBorrowBook } from '../fn/book/return-borrow-book';
 import { ReturnBorrowBook$Params } from '../fn/book/return-borrow-book';
+import { saveBook } from '../fn/book/save-book';
+import { SaveBook$Params } from '../fn/book/save-book';
 import { updateArchivedStatus } from '../fn/book/update-archived-status';
 import { UpdateArchivedStatus$Params } from '../fn/book/update-archived-status';
 import { updateShareableStatus } from '../fn/book/update-shareable-status';
@@ -43,58 +43,58 @@ export class BookService extends BaseService {
     super(config, http);
   }
 
-  /** Path part for operation `getAllBooks()` */
-  static readonly GetAllBooksPath = '/books';
+  /** Path part for operation `findAllBooks()` */
+  static readonly FindAllBooksPath = '/books';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getAllBooks()` instead.
+   * To access only the response body, use `findAllBooks()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAllBooks$Response(params?: GetAllBooks$Params, context?: HttpContext): Observable<StrictHttpResponse<PageResponseBookResponse>> {
-    return getAllBooks(this.http, this.rootUrl, params, context);
+  findAllBooks$Response(params?: FindAllBooks$Params, context?: HttpContext): Observable<StrictHttpResponse<PageResponseBookResponse>> {
+    return findAllBooks(this.http, this.rootUrl, params, context);
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `getAllBooks$Response()` instead.
+   * To access the full response (for headers, for example), `findAllBooks$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAllBooks(params?: GetAllBooks$Params, context?: HttpContext): Observable<PageResponseBookResponse> {
-    return this.getAllBooks$Response(params, context).pipe(
+  findAllBooks(params?: FindAllBooks$Params, context?: HttpContext): Observable<PageResponseBookResponse> {
+    return this.findAllBooks$Response(params, context).pipe(
       map((r: StrictHttpResponse<PageResponseBookResponse>): PageResponseBookResponse => r.body)
     );
   }
 
-  /** Path part for operation `createBook()` */
-  static readonly CreateBookPath = '/books';
+  /** Path part for operation `saveBook()` */
+  static readonly SaveBookPath = '/books';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `createBook()` instead.
+   * To access only the response body, use `saveBook()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  createBook$Response(params: CreateBook$Params, context?: HttpContext): Observable<StrictHttpResponse<number>> {
-    return createBook(this.http, this.rootUrl, params, context);
+  saveBook$Response(params: SaveBook$Params, context?: HttpContext): Observable<StrictHttpResponse<number>> {
+    return saveBook(this.http, this.rootUrl, params, context);
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `createBook$Response()` instead.
+   * To access the full response (for headers, for example), `saveBook$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  createBook(params: CreateBook$Params, context?: HttpContext): Observable<number> {
-    return this.createBook$Response(params, context).pipe(
+  saveBook(params: { body: BookRequest }, context?: HttpContext): Observable<number> {
+    return this.saveBook$Response(params, context).pipe(
       map((r: StrictHttpResponse<number>): number => r.body)
     );
   }
 
   /** Path part for operation `uploadBookCoverPicture()` */
-  static readonly UploadBookCoverPicturePath = '/books/cover/{bookId}';
+  static readonly UploadBookCoverPicturePath = '/books/cover/{book-id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -103,7 +103,7 @@ export class BookService extends BaseService {
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
   uploadBookCoverPicture$Response(params: UploadBookCoverPicture$Params, context?: HttpContext): Observable<StrictHttpResponse<{
-}>> {
+  }>> {
     return uploadBookCoverPicture(this.http, this.rootUrl, params, context);
   }
 
@@ -113,17 +113,20 @@ export class BookService extends BaseService {
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  uploadBookCoverPicture(params: UploadBookCoverPicture$Params, context?: HttpContext): Observable<{
-}> {
+  uploadBookCoverPicture(params: {
+    "book-id": number;
+    body: { file: any };
+    bookId: number
+  }, context?: HttpContext): Observable<{}> {
     return this.uploadBookCoverPicture$Response(params, context).pipe(
       map((r: StrictHttpResponse<{
-}>): {
-} => r.body)
+      }>): {
+      } => r.body)
     );
   }
 
   /** Path part for operation `borrowBook()` */
-  static readonly BorrowBookPath = '/books/borrow/{bookId}';
+  static readonly BorrowBookPath = '/books/borrow/{book-id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -141,14 +144,14 @@ export class BookService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  borrowBook(params: BorrowBook$Params, context?: HttpContext): Observable<number> {
+  borrowBook(params: { "book-id": number }, context?: HttpContext): Observable<number> {
     return this.borrowBook$Response(params, context).pipe(
       map((r: StrictHttpResponse<number>): number => r.body)
     );
   }
 
   /** Path part for operation `updateShareableStatus()` */
-  static readonly UpdateShareableStatusPath = '/books/shareable/{bookId}';
+  static readonly UpdateShareableStatusPath = '/books/shareable/{book-id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -166,14 +169,14 @@ export class BookService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  updateShareableStatus(params: UpdateShareableStatus$Params, context?: HttpContext): Observable<number> {
+  updateShareableStatus(params: { "book-id": number }, context?: HttpContext): Observable<number> {
     return this.updateShareableStatus$Response(params, context).pipe(
       map((r: StrictHttpResponse<number>): number => r.body)
     );
   }
 
   /** Path part for operation `returnBorrowBook()` */
-  static readonly ReturnBorrowBookPath = '/books/borrow/return/{bookId}';
+  static readonly ReturnBorrowBookPath = '/books/borrow/return/{book-id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -191,14 +194,14 @@ export class BookService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  returnBorrowBook(params: ReturnBorrowBook$Params, context?: HttpContext): Observable<number> {
+  returnBorrowBook(params: { "book-id": number }, context?: HttpContext): Observable<number> {
     return this.returnBorrowBook$Response(params, context).pipe(
       map((r: StrictHttpResponse<number>): number => r.body)
     );
   }
 
   /** Path part for operation `approveReturnBorrowBook()` */
-  static readonly ApproveReturnBorrowBookPath = '/books/borrow/return/approve/{bookId}';
+  static readonly ApproveReturnBorrowBookPath = '/books/borrow/return/approve/{book-id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -216,14 +219,14 @@ export class BookService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  approveReturnBorrowBook(params: ApproveReturnBorrowBook$Params, context?: HttpContext): Observable<number> {
+  approveReturnBorrowBook(params: { "book-id": number }, context?: HttpContext): Observable<number> {
     return this.approveReturnBorrowBook$Response(params, context).pipe(
       map((r: StrictHttpResponse<number>): number => r.body)
     );
   }
 
   /** Path part for operation `updateArchivedStatus()` */
-  static readonly UpdateArchivedStatusPath = '/books/archived/{bookId}';
+  static readonly UpdateArchivedStatusPath = '/books/archived/{book-id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -241,33 +244,33 @@ export class BookService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  updateArchivedStatus(params: UpdateArchivedStatus$Params, context?: HttpContext): Observable<number> {
+  updateArchivedStatus(params: { "book-id": number }, context?: HttpContext): Observable<number> {
     return this.updateArchivedStatus$Response(params, context).pipe(
       map((r: StrictHttpResponse<number>): number => r.body)
     );
   }
 
-  /** Path part for operation `getBookById()` */
-  static readonly GetBookByIdPath = '/books/{bookId}';
+  /** Path part for operation `findBookById()` */
+  static readonly FindBookByIdPath = '/books/{book-id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getBookById()` instead.
+   * To access only the response body, use `findBookById()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getBookById$Response(params: GetBookById$Params, context?: HttpContext): Observable<StrictHttpResponse<BookResponse>> {
-    return getBookById(this.http, this.rootUrl, params, context);
+  findBookById$Response(params: FindBookById$Params, context?: HttpContext): Observable<StrictHttpResponse<BookResponse>> {
+    return findBookById(this.http, this.rootUrl, params, context);
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `getBookById$Response()` instead.
+   * To access the full response (for headers, for example), `findBookById$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getBookById(params: GetBookById$Params, context?: HttpContext): Observable<BookResponse> {
-    return this.getBookById$Response(params, context).pipe(
+  findBookById(params: { "book-id": any }, context?: HttpContext): Observable<BookResponse> {
+    return this.findBookById$Response(params, context).pipe(
       map((r: StrictHttpResponse<BookResponse>): BookResponse => r.body)
     );
   }
